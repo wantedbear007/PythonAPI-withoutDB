@@ -1,8 +1,13 @@
 from flask import Flask, request
+from flask_jwt import JWT, jwt_required
 from flask_restful import Resource, Api, reqparse
+from security import authenticate, identity
 
 app = Flask(__name__)
+app.secret_key = 'noob'
 api = Api(app)
+
+jwt = JWT(app, authenticate, identity)
 
 items = [
     {"name": "Shampoo", "price": 129}
@@ -15,6 +20,7 @@ def delete_fun(name):
 
 
 class Items(Resource):
+    @jwt_required()
     def get(self):
         return items, 200
 
